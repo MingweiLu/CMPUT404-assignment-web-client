@@ -18,3 +18,11 @@ examples thus some of the code is Copyright © 2001-2013 Python
 Software Foundation; All Rights Reserved under the PSF license (GPL
 compatible) http://docs.python.org/2/library/socketserver.html
 
+httpclient.py is modified by Mingwei Lu (mlu1)
+
+Contributors and References
+========================
+Reference: 
+https://www.w3schools.com/tags/ref_httpmethods.asp
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
+https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlencode

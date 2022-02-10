@@ -18,6 +18,8 @@
 # Write your own HTTP GET and POST
 # The point is to understand what you have to send and get experience with it
 
+from email import parser
+from pyexpat import ParserCreate
 import sys
 import socket
 import re
@@ -41,13 +43,16 @@ class HTTPClient(object):
         return None
 
     def get_code(self, data):
-        return None
+        responseLine1 = list(data.split('\r\n'))[0]
+        code = int(responseLine1.split(" ")[1])
+        return code
 
     def get_headers(self,data):
         return None
 
     def get_body(self, data):
-        return None
+        body = data.split("\r\n\r\n")[1]
+        return body
     
     def sendall(self, data):
         self.socket.sendall(data.encode('utf-8'))
@@ -70,11 +75,59 @@ class HTTPClient(object):
     def GET(self, url, args=None):
         code = 500
         body = ""
+
+        parseResult = urllib.parse.urlparse(url)
+        host = parseResult.hostname
+        if parseResult.port:
+            port = parseResult.port
+        else:
+            port = 80
+        
+        if parseResult.path:
+            path = parseResult.path
+        else:
+            path = "/"
+
+        headers = f"GET {path} HTTP/1.1\r\nHost: {host}\r\nUser-Agent: MingweiLu\r\nAccept-Language: en-US\r\nAccept-Charset: UTF-8\r\nConnection: close\r\n\r\n"
+        self.connect(host, port)
+        self.sendall(headers)
+
+        reply = self.recvall(self.socket)
+        
+        code = self.get_code(reply)
+        body = self.get_body(reply)
+
+        self.close()
+
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
         code = 500
         body = ""
+
+        parseResult = urllib.parse.urlparse(url)
+        host = parseResult.hostname
+        if parseResult.port:
+            port = parseResult.port
+        else:
+            port = 80
+        if parseResult.path:
+            path = parseResult.path
+        else:
+            path = "/"
+        args = args if args else ""
+        form = urllib.parse.urlencode(args)
+        form_len = str(len(form.encode('utf-8')))
+        headers = f"POST {path} HTTP/1.1\r\nHost: {path}\r\nUser-Agent: MingweiLu\r\nAccept-Language: en-US\r\nAccept-Charset: UTF-8\r\nContent-Type: application/json\r\nContent-Length: {form_len}\r\nConnection: close\r\n\r\n"
+
+        self.connect(host, port)
+        self.sendall(headers+form)
+
+        reply = self.recvall(self.socket)
+        
+        code = self.get_code(reply)
+        body = self.get_body(reply)
+
         return HTTPResponse(code, body)
 
     def command(self, url, command="GET", args=None):
