@@ -24,5 +24,7 @@ Contributors and References
 ========================
 Reference: 
 https://www.w3schools.com/tags/ref_httpmethods.asp
+
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
+
 https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlencode

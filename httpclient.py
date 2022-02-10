@@ -23,6 +23,7 @@ from pyexpat import ParserCreate
 import sys
 import socket
 import re
+from urllib import response
 # you may use urllib to encode data appropriately
 import urllib.parse
 
@@ -99,6 +100,8 @@ class HTTPClient(object):
 
         self.close()
 
+        # print body to stdout
+        print(f'{code}\n{self.get_headers(response)}\r\n{body}')
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
@@ -124,12 +127,13 @@ class HTTPClient(object):
         self.sendall(headers+form)
 
         reply = self.recvall(self.socket)
-        
         code = self.get_code(reply)
         body = self.get_body(reply)
 
         self.close()
 
+        # print body to stdout
+        print(f'{code}\n{self.get_headers(response)}\r\n{body}')
         return HTTPResponse(code, body)
 
     def command(self, url, command="GET", args=None):
