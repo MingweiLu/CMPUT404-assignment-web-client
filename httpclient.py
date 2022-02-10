@@ -128,6 +128,8 @@ class HTTPClient(object):
         code = self.get_code(reply)
         body = self.get_body(reply)
 
+        self.close()
+
         return HTTPResponse(code, body)
 
     def command(self, url, command="GET", args=None):
